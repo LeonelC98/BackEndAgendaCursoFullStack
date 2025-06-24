@@ -1,19 +1,21 @@
 const express = require('express');
 const morgan = require('morgan');
-
+const cors =  require('cors')
 const app = express();
 
-const ramdonId =()=> Math.floor(Math.random()*1000)
-
+app.use(cors())
 app.use(express.json())
 
-morgan.token('body', (req) => {
-  const body = {name: req.body.name,
-    number:req.body.number}
-  return JSON.stringify(body)
+morgan.token('body', (req, res) => {
+  if (req.body && typeof req.body === 'object' && req.body.name && req.body.number) {
+    const body = { name: req.body.name, number: req.body.number };
+    return JSON.stringify(body);
+  }
+  return '';
 });
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
+const ramdonId =()=> Math.floor(Math.random()*1000)
 
 let persons = [
     { 
