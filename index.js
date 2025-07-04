@@ -43,21 +43,22 @@ app.get("/api/persons/:id",(req,res)=>{
   })
 })
 app.post("/api/persons",(req,res)=>{
-  const person = req.body
-  const readyExist = persons.find(person1 => person1.name === person.name)
+   const body = req.body
 
-  person.id = ramdonId()
-  if(!person.name){
-    return res.status(400).json({error:'Missing name'})
-  }else if (!person.number){
-    return res.status(400).json({error:'Missing number'})
-  }else if (readyExist){
-    return res.status(400).json({error:'Person already exist on Phonebook'})
-  }else{
-      persons = persons.concat(person)
-      return res.json(person)
+  if (!body.name || !body.number) {
+    return res.status(400).json({ 
+      error: 'content missing' 
+    })
   }
 
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  })
+
+  person.save().then(savePerson => {
+    res.json(savePerson)
+  })
 })
 
 app.delete("/api/persons/:id",(req,res)=>{
