@@ -15,8 +15,22 @@ mongoose.connect(url)
   })
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type:String,
+    minLength:[3,'the name {VALUE} is tho short, must be more that 3 caracters'],
+    require:true,
+  },
+  number: {
+    type:String,
+    validate:{
+      validator: function (v) {
+      return /^\d{2,3}-\d+$/.test(v)
+    },
+      message: props => `${props.value} is not a valid number`
+    },
+    minLength: [8,`the number {VALUE} is very short, minimum size is 8 characters`],
+    require:true
+  },
 })
 
 personSchema.set('toJSON', {
